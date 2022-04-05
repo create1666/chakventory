@@ -1,15 +1,18 @@
-import WelcomePage from 'Pages/WelcomePage/WelcomePage';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import WelcomePage from 'Pages/WelcomePage/WelcomePage.jsx';
+import {
+  BrowserRouter as Router,
+  Route,
+  Routes,
+  Navigate,
+} from 'react-router-dom';
 
 function App() {
   return (
     <Router>
-      <Switch>
-        <Route exact path='/'>
-          <Redirect to='/welcomepage' />
-        </Route>
-        <Route exact path='/welcomepage' component={WelcomePage} />
-      </Switch>
+      <Routes>
+        <Route exact path='/welcomepage' element={<WelcomePage />} />
+        <Route path='/' element={<Navigate to='/welcomepage' />} />
+      </Routes>
     </Router>
   );
 }
