@@ -144,7 +144,7 @@ const WelcomePage = () => {
       ...old,
       [name]: value,
     }));
-    setActive(!active);
+    setActive(true);
   };
 
   return (
