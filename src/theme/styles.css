@@ -1,1 +1,9 @@
 @import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans&display=swap');
+/* 
+.css-1c6j008 {
+  outline: none;
+} */
+
+.inputID {
+  outline: none !important;
+}

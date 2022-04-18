@@ -55,6 +55,9 @@ const customTheme = extendTheme({
     body: `Kumbh Sans , ${base.fonts?.body}`,
     heading: `Kumbh Sans , ${base.fonts?.heading}`,
   },
+  ...base,
+  shadows: { ...base.shadows, outline: '0 !important' },
+
   fontSizes: {
     xs: '0.75rem',
     sm: '0.875rem',

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import _ from 'lodash';
 import {
   Flex,
   Box,
@@ -15,137 +16,108 @@ import searchIcon from '../../Assets/searchIcon.svg';
 import Icon from 'Components/Icon/Icon';
 import { Radio, RadioGroup } from '@chakra-ui/react';
 import brandLogoIcon from '../../Assets/logo.svg';
-
-const companies = [
-  {
-    _id: '62418aca3aea74699087ef58',
-    name: 'bush',
-    imgUrl: `${brandLogoIcon}`,
-    description:
-      'Browse premium related images on iStock | Save 20% with code UNSPLASH20',
-    __v: 0,
-  },
-  {
-    _id: '62418aca3aea74699087ef59',
-    name: 'harn',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'Code on a laptop screen',
-    __v: 0,
-  },
-  {
-    _id: '62418aca3aea74699087ef5a',
-    name: 'lumy',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'The focus',
-    __v: 0,
-  },
-  {
-    _id: '62418aca3aea74699087ef5b',
-    name: 'Algo-baba',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'Editorial, Health & Wellness, Athletics',
-    __v: 0,
-  },
-  {
-    _id: '62418d993aea74699087ef62',
-    name: 'lummy',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'The focus',
-    __v: 0,
-  },
-  {
-    _id: '62418d993aea74699087ef61',
-    name: 'harlan',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'Code on a laptop screen',
-    __v: 0,
-  },
-  {
-    _id: '62418d993aea74699087ef60',
-    name: 'Jc-ush',
-    imgUrl: `${brandLogoIcon}`,
-    description:
-      'Browse premium related images on iStock | Save 20% with code UNSPLASH20',
-    __v: 0,
-  },
-  {
-    _id: '62418d993aea74699087ef63',
-    name: 'Algo-bba',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'Editorial, Health & Wellness, Athletics',
-    __v: 0,
-  },
-  {
-    _id: '62418dac3aea74699087ef6b',
-    name: 'Alo-baba',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'Editorial, Health & Wellness, Athletics',
-    __v: 0,
-  },
-  {
-    _id: '62418dac3aea74699087ef6a',
-    name: 'lmy',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'The focus',
-    __v: 0,
-  },
-  {
-    _id: '62418dac3aea74699087ef69',
-    name: 'arlan',
-    imgUrl: `${brandLogoIcon}`,
-    description: 'Code on a laptop screen',
-    __v: 0,
-  },
-  {
-    _id: '62418dac3aea74699087ef68',
-    name: 'Jc-bu',
-    imgUrl: `${brandLogoIcon}`,
-    description:
-      'Browse premium related images on iStock | Save 20% with code UNSPLASH20',
-    __v: 0,
-  },
-];
+import axios from 'axios';
+import { useEffect } from 'react';
+import truncate from 'lodash/truncate';
+import { useNavigate } from 'react-router-dom';
+import { useQuery } from 'react-query';
 
 const entireBgColr = {
   backgroundColor: '#E5E5E5',
-  width: '100vw',
   height: '100vh',
+  width: '100vw',
   overflow: 'hidden',
+  position: 'fixed',
 };
 
-const WelcomePage = () => {
-  const [selectedValue, setValue] = React.useState({});
-  const [active, setActive] = useState(false);
+// const fetchCompanyData = () => {
+//   return;
+// };
+// const fetchCompanyData = async () => {
+//   const response = await axios.get(
+//     `http://localhost:4000/chakventory/companies`
+//   );
+//   return response.data;
+// };
+
+const WelcomePage = ({ selectedCompany, setSelectedCompany }) => {
+  let navigate = useNavigate();
 
   // the value of the search field
   const [inputValue, setInputValue] = useState('');
 
   // the search result
-  const [foundCompany, setFoundCompany] = useState(companies);
+  const [foundCompany, setFoundCompany] = useState();
 
-  // check if keywordSearch not empty, filter foundCompany to match keyword search.
-  const onInputFilter = (e) => {
-    let keyword = e.target.value;
-    if (keyword !== '') {
-      let filteredCompany = foundCompany.filter((company) =>
-        company.name.toLowerCase().includes(keyword.toLowerCase())
+  // useEffect(() => {
+  //   const getCompanies = async () => {
+  //     try {
+  //       const response = await axios.get(
+  //         'http://localhost:4000/chakventory/companies'
+  //       );
+  //       console.log(response);
+  //       setFoundCompany(response.data);
+  //     } catch (error) {
+  //       console.error(error);
+  //     }
+  //   };
+  //   getCompanies();
+  // }, []);
+
+  // const { isLoading, data } = useQuery('company-stores', async () => {
+  //   const postsData = await axios.get(
+  //     'http://localhost:4000/chakventory/companies'
+  //   );
+  //   return postsData;
+  // });
+
+  const { isLoading, data } = useQuery('stores', async () => {
+    const postsData = await axios.get(
+      'http://localhost:4000/chakventory/companies'
+    );
+    return postsData;
+  });
+  useEffect(() => setFoundCompany(data?.data), [data?.data]);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    const searchStore = async (search) => {
+      const { data } = await axios.get(
+        'http://localhost:4000/chakventory/companies',
+        {
+          params: { search },
+          signal: controller.signal,
+        }
       );
-      setFoundCompany(filteredCompany);
-    } else {
-      // If the text field is empty, show all companiesInfo
-      setFoundCompany(companies);
+
+      console.log(data, ' data');
+
+      setFoundCompany(data);
+    };
+
+    if (inputValue) {
+      searchStore(inputValue);
     }
 
+    return () => controller.abort();
+  }, [inputValue]);
+
+  if (isLoading) {
+    return <div>loadong...</div>;
+  }
+
+  const onInputFilter = (e) => {
+    let keyword = e.target.value;
     setInputValue(keyword);
   };
 
-  const onCompanyChange = (name, value) => {
-    setValue((old) => ({
-      ...old,
-      [name]: value,
-    }));
-    setActive(true);
-  };
+  // check if keywordSearch not empty, filter foundCompany to match keyword search.
+  // const filteredCompany = inputValue
+  // ? foundCompany.filter((company) =>
+  //     company?.name?.toLowerCase().includes(inputValue?.toLowerCase())
+  //   )
+  // ?
+  // : foundCompany;
 
   return (
     <div style={entireBgColr}>
@@ -155,7 +127,7 @@ const WelcomePage = () => {
           <Heading as='h4' fontSize='28px'>
             Welcome
           </Heading>
-          <Text color='gray.100' isTruncated>
+          <Text color='#8892A2' isTruncated>
             Please select the name of the store you want to sign in to.
           </Text>
         </Box>
@@ -172,7 +144,7 @@ const WelcomePage = () => {
           flexDir='column'
           borderRadius={6}
         >
-          <InputGroup onChange={onInputFilter} inputValue={inputValue}>
+          <InputGroup onChange={onInputFilter}>
             <InputLeftElement
               children={<Icon src={searchIcon} color='gray.300' />}
             />
@@ -187,21 +159,17 @@ const WelcomePage = () => {
             />
           </InputGroup>
 
-          <RadioGroup
-            mt={5}
-            overflowY='scroll'
-            onChange={(value) => onCompanyChange('name', value)}
-            selectedValue={selectedValue}
-          >
+          <RadioGroup mt={5} maxH='510px' overflowY='scroll'>
             <div>
               {foundCompany && foundCompany.length > 0 ? (
                 foundCompany.map((company) => (
                   <div
-                    borderRadius={5}
+                    key={company._id}
+                    onClick={() => setSelectedCompany(company)}
                     style={{
-                      background:
-                        selectedValue?.name === company?.name && '#AEB3FF',
                       borderRadius: '5px',
+                      background:
+                        selectedCompany?._id === company?._id && 'teal',
                     }}
                   >
                     <Radio
@@ -234,14 +202,18 @@ const WelcomePage = () => {
                               fontSize: '16px',
                             }}
                           >
-                            {company.name}
+                            {company?.name}
                           </span>
                           <span
                             style={{
                               fontSize: '12px',
                             }}
                           >
-                            {company.description}
+                            {truncate(company.description, {
+                              length: 40,
+                              separator: ' ',
+                              omission: ' ...',
+                            })}
                           </span>
                         </div>
                       </div>
@@ -256,12 +228,21 @@ const WelcomePage = () => {
             </div>
           </RadioGroup>
         </Flex>
-        {active ? (
-          <Button mt={4} w='full' color='white' bg='#553FFB'>
+        {!_.isEmpty(selectedCompany) ? (
+          <Button
+            onClick={() => navigate('/login')}
+            mt={4}
+            w='full'
+            color='white'
+            bg='#553FFB'
+            _hover={{
+              backgroundColor: 'none',
+            }}
+          >
             Continue
           </Button>
         ) : (
-          <Button mt={4} w='full' color='white'>
+          <Button mt={4} w='full' disabled color='white'>
             Continue
           </Button>
         )}
