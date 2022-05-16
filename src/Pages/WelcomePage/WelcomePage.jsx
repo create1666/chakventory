@@ -72,9 +72,7 @@ const WelcomePage = ({ selectedCompany, setSelectedCompany }) => {
   // });
 
   const { isLoading, data } = useQuery('stores', async () => {
-    const postsData = await axios.get(
-      'http://localhost:4000/chakventory/companies'
-    );
+    const postsData = await axios.get('chakventory/companies');
     return postsData;
   });
   useEffect(() => setFoundCompany(data?.data), [data?.data]);
@@ -82,15 +80,10 @@ const WelcomePage = ({ selectedCompany, setSelectedCompany }) => {
   useEffect(() => {
     const controller = new AbortController();
     const searchStore = async (search) => {
-      const { data } = await axios.get(
-        'http://localhost:4000/chakventory/companies',
-        {
-          params: { search },
-          signal: controller.signal,
-        }
-      );
-
-      console.log(data, ' data');
+      const { data } = await axios.get('chakventory/companies', {
+        params: { search },
+        signal: controller.signal,
+      });
 
       setFoundCompany(data);
     };

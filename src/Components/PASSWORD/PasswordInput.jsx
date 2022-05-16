@@ -18,6 +18,7 @@ const PasswordInput = ({
   isInvalid,
   label,
   placeholder = 'Enter password',
+  ...props
 }) => {
   const [show, setShow] = React.useState(false);
   const handleClick = () => setShow(!show);
@@ -36,6 +37,7 @@ const PasswordInput = ({
       >
         <InputGroup size='md'>
           <Input
+            name='password'
             border='none'
             _focusWithin={{
               border: 'none',
@@ -48,10 +50,11 @@ const PasswordInput = ({
               outline: 'none',
             }}
             pr='4.5rem'
+            errorBorderColor='yellow.500'
             type={show ? 'text' : 'password'}
             placeholder={placeholder}
             onChange={(e) => onChange(e.target.value)}
-            isInvalid={isInvalid}
+            isInvalid
           />
           <InputRightElement>
             <Button h='1.75rem' size='sm' onClick={handleClick}>
