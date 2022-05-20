@@ -19,11 +19,24 @@ const Home = () => {
     <Flex background='#E5E5E5'>
       <Box display='flex'>
         <SideBar />
-        <Box display='flex' ml='50px' mt='150px'>
-          {boardData.map((item, index) => (
-            <CardComponent key={index} item={item} />
-          ))}
-        </Box>
+        <Flex flexDir='column'>
+          <Box>
+            <Text
+              color='#040A1D'
+              fontSize='40px'
+              ml='48px'
+              mt='145px'
+              fontWeight='900'
+            >
+              Dashboard
+            </Text>
+          </Box>
+          <Box display='flex' ml='50px'>
+            {boardData.map((item, index) => (
+              <CardComponent key={index} item={item} />
+            ))}
+          </Box>
+        </Flex>
       </Box>
     </Flex>
   );
