@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { countries } from 'countries-list';
 import CountryLists from './CountryLists';
 import {
@@ -27,19 +27,23 @@ extractedCountryData = [
   }),
 ];
 
+console.log(extractedCountryData, 'extreacted');
+
 const PhoneInput = ({ label, onHandlePhoneDialCodeChange, ...props }) => {
   const [selectedRegionData, setregionData] = useState({
     emoji: extractedCountryData[4].emoji,
     phone: extractedCountryData[4].phone,
   });
+  const [countryCode, setCountryCode] = useState('234');
   const [phoneNumber, setPhoneNumber] = useState('');
   const [dropdownSelect, setDropDown] = useState(false);
-  const currentValue = selectedRegionData.phone + ' ' + phoneNumber;
+  // const currentValue = selectedRegionData.phone + phoneNumber;
 
-  const handleCountryChange = (region) => {
-    setregionData(region);
+  const handleCountryChange = (countryCode) => {
+    // setregionData(region);
+    setCountryCode(countryCode);
     setDropDown(!dropdownSelect);
-    onHandlePhoneDialCodeChange(currentValue);
+    onHandlePhoneDialCodeChange(countryCode + phoneNumber);
   };
 
   const { ref } = useOnClickOutside(() => setDropDown(false));
@@ -64,40 +68,52 @@ const PhoneInput = ({ label, onHandlePhoneDialCodeChange, ...props }) => {
             console.log(dropdownSelect);
           }}
         >
-          <span>{selectedRegionData.emoji}</span>
+          <span>
+            {/* {_.get(
+              _.find(extractedCountryData, (c) => c.phone === countryCode),
+              'emoji'
+            )} */}
+            {
+              _.find(extractedCountryData, (c) => c.phone === countryCode)
+                ?.emoji
+            }
+          </span>
           <Box ml='2' mr='2'>
             <span>+</span>
-            {`${selectedRegionData.phone}`}
+            {countryCode}
           </Box>
           <Icon src={dropdown} color='gray.300' style={{ cursor: 'pointer' }} />
         </Flex>
-        <Input
-          type='tel'
-          placeholder='phone number'
-          border='none'
-          _focusWithin={{
-            border: 'none',
-            boxShadow: 'none',
-            outline: 'none',
-          }}
-          _hover={{
-            border: 'none',
-            boxShadow: 'none',
-            outline: 'none',
-          }}
-          onChange={(event) => {
-            setPhoneNumber(event.target.value);
-            onHandlePhoneDialCodeChange(
-              selectedRegionData.phone + ' ' + event.target.value
-            );
-          }}
-        />
+
+        <InputGroup>
+          <Input
+            name='phonenumber'
+            type='tel'
+            placeholder='phone number'
+            border='none'
+            _focusWithin={{
+              border: 'none',
+              boxShadow: 'none',
+              outline: 'none',
+            }}
+            _hover={{
+              border: 'none',
+              boxShadow: 'none',
+              outline: 'none',
+            }}
+            onChange={(event) => {
+              setPhoneNumber(event.target.value);
+              onHandlePhoneDialCodeChange(countryCode + event.target.value);
+            }}
+          />
+        </InputGroup>
       </Box>
 
       {dropdownSelect && (
         <CountryLists
           extractedCountryData={extractedCountryData}
           handleCountryChange={handleCountryChange}
+          countryCode={countryCode}
           selectedRegion={selectedRegionData}
         />
       )}

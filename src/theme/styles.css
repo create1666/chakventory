@@ -7,3 +7,9 @@
 .inputID {
   outline: none !important;
 }
+
+.passwordfield .css-uf873o[aria-invalid='true'],
+.css-uf873o[data-invalid] {
+  border-color: greenyellow !important;
+  box-shadow: greenyellow !important;
+}

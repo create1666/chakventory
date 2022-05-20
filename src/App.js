@@ -7,6 +7,8 @@ import {
   Routes,
   Navigate,
 } from 'react-router-dom';
+import AuthLoginPage from 'Pages/WelcomePage/AuthLoginPage';
+import Home from 'Pages/DashBoard/Home';
 
 function App() {
   const [selectedCompany, setSelectedCompany] = useState({});
@@ -34,7 +36,26 @@ function App() {
             />
           }
         />
-
+        <Route
+          exact
+          path='/authenticateUserPage'
+          element={
+            <AuthLoginPage
+              selectedCompany={selectedCompany}
+              setSelectedCompany={setSelectedCompany}
+            />
+          }
+        />
+        <Route
+          exact
+          path='/dashboard'
+          element={
+            <Home
+              selectedCompany={selectedCompany}
+              setSelectedCompany={setSelectedCompany}
+            />
+          }
+        />
         <Route path='/' element={<Navigate to='/welcomepage' />} />
       </Routes>
     </Router>

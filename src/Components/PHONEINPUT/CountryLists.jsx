@@ -13,6 +13,7 @@ import {
 const CountryLists = ({
   extractedCountryData,
   selectedRegion,
+  countryCode,
   handleCountryChange,
   ...props
 }) => {
@@ -39,12 +40,11 @@ const CountryLists = ({
       >
         {extractedCountryData?.map((country, i) => (
           <div
-            onClick={() => handleCountryChange(country)}
+            onClick={() => handleCountryChange(country.phone)}
             key={i}
             style={{
               padding: '10px',
-              backgroundColor:
-                selectedRegion?.emoji === country?.emoji ? '#553ffb' : '',
+              backgroundColor: countryCode === country?.phone ? '#553ffb' : '',
             }}
           >
             <span style={{ marginRight: '15px' }}>{country?.emoji}</span>
